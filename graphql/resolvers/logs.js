@@ -16,12 +16,13 @@ module.exports = {
 
     async getCurrentUserLogs(_, __, context, info) {
       try {
-        const user = checkAuth(context);
-        const userExists = await User.findById(user.id);
+        const user = await checkAuth(context);
 
-        if (!userExists) {
-          throw new Error("User creating post does not exist");
-        }
+        // const userExists = await User.findById(user.id);
+        // console.log("COMES HERE ADSADASDAS");
+        // if (!userExists) {
+        //   throw new Error("User creating post does not exist");
+        // }
 
         const logs = await Log.find({ user: user.id }).sort({ createdAt: -1 });
 
@@ -33,13 +34,13 @@ module.exports = {
 
     async getLog(_, { input: { logId } }, context, info) {
       try {
-        const user = checkAuth(context);
+        const user = await checkAuth(context);
 
-        const userExists = await User.findById(user.id);
-
-        if (!userExists) {
-          throw new Error("User creating post does not exist");
-        }
+        // const userExists = await User.findById(user.id);
+        // console.log("COMES HERE");
+        // if (!userExists) {
+        //   throw new Error("User creating post does not exist");
+        // }
 
         const log = await Log.findById(logId);
 
@@ -72,13 +73,13 @@ module.exports = {
         });
       }
 
-      const user = checkAuth(context);
+      const user = await checkAuth(context);
 
-      const userExists = await User.findById(user.id);
-
-      if (!userExists) {
-        throw new Error("User creating post does not exist");
-      }
+      // console.log("COMES HERE");
+      // const userExists = await User.findById(user.id);
+      // if (!userExists) {
+      //   throw new Error("User creating post does not exist");
+      // }
 
       const { body, phoneNumber } = input;
 

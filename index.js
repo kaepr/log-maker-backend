@@ -4,6 +4,8 @@ const connectDB = require("./database/db");
 
 require("dotenv").config();
 
+// TODO Remove logs after properly testing
+
 const PORT = process.env.PORT || 5000;
 
 const typeDefs = require("./graphql/typeDefs");

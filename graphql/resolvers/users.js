@@ -14,13 +14,17 @@ const { generateToken, checkAdmin } = require("../../utils/authHelper");
 module.exports = {
   Query: {
     async getUsers(_, __, context, info) {
-      const user = checkAdmin(context);
+      // console.log("inside get users");
+      const user = await checkAdmin(context);
 
-      const userExists = await User.findById(user.id);
+      // console.log("user = ", user);
 
-      if (!userExists) {
-        throw new Error("User does not exist");
-      }
+      // console.log("user data from token = ", user);
+      // const userExists = await User.findById(user.id);
+
+      // if (!userExists) {
+      //   throw new Error("User does not exist");
+      // }
 
       try {
         return await User.find().sort({ createdAt: -1 });
@@ -149,7 +153,7 @@ module.exports = {
           errors: errors,
         });
       }
-      console.log("input = ", input);
+
       const { fullname, role, password, email, id } = input;
 
       if (role !== "USER" && role !== "ADMIN") {
@@ -187,7 +191,7 @@ module.exports = {
       });
 
       const res = await User.findById(id);
-      console.log("res = ", res);
+      // console.log("res = ", res);
       return res;
     },
   },

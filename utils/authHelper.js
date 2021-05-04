@@ -6,9 +6,6 @@ const generateToken = (data) => {
   return jwt.sign(
     {
       id: data.id,
-      email: data.email,
-      fullname: data.fullname,
-      role: data.role,
     },
     process.env.JWT_SECRET,
     {
@@ -17,7 +14,7 @@ const generateToken = (data) => {
   );
 };
 
-const checkAuth = (context) => {
+const checkAuth = async (context) => {
   const authHeader = context.req.headers.authorization;
 
   if (authHeader) {
@@ -28,12 +25,17 @@ const checkAuth = (context) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET);
 
         // check if this user still exists in database or not
-        console.log("userData  in checkAuth = ", userData);
+        // console.log("userData  in checkAuth = ", userData);
+
         // const user = await User.findById(userData.id);
+        const userDoc = await User.findById(userData.id);
+
+        if (!userDoc) {
+          throw new AuthenticationError("Invalid / Expired Token");
+        }
 
         return userData;
       } catch (err) {
-        console.log("happens");
         throw new AuthenticationError("Invalid / Expired Token");
       }
     }
@@ -48,7 +50,7 @@ const checkAuth = (context) => {
  * ? Maybe instead of throwing error, could just return boolean. Not sure
  */
 
-const checkAdmin = (context) => {
+const checkAdmin = async (context) => {
   const authHeader = context.req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split("Bearer ")[1];
@@ -58,10 +60,15 @@ const checkAdmin = (context) => {
         const userData = jwt.verify(token, process.env.JWT_SECRET);
         // check if this user also exists in the database or not
         // console.log("user data inside check admin : ", userData);
-        if (userData.role !== "ADMIN") {
-          console.log("should happend");
-          throw new AuthenticationError("Access not granted");
+
+        const userDoc = await User.findById(userData.id);
+
+        // console.log("user doc admin : ", userDoc);
+        if (userDoc.role !== "ADMIN") {
+          // console.log("should happend");
+          throw new Error("Access not granted");
         }
+
         return userData;
       } catch (err) {
         throw new AuthenticationError("Invalid / Expired Token");
