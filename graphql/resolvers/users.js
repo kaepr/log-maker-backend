@@ -50,7 +50,6 @@ module.exports = {
         });
       }
 
-      console.log("user data : ", user);
       const token = generateToken(user);
 
       return {
