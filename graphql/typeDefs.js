@@ -27,6 +27,14 @@ const typeDefs = gql`
     token: String!
   }
 
+  type UpdatedUser{
+    id: ID!
+    fullname: String!
+    role: String!
+    createdAt: String!
+    email: String!
+  }
+
   """
   Get Log Input
   Used to identify which log to get
@@ -36,7 +44,7 @@ const typeDefs = gql`
   }
 
   """
-  Register Input Type
+  Register Input
   """
   input RegisterInput {
     fullname: String!
@@ -47,7 +55,7 @@ const typeDefs = gql`
   }
 
   """
-  Login Type
+  Login Input
   """
   input LoginInput {
     email: String!
@@ -55,11 +63,22 @@ const typeDefs = gql`
   }
 
   """
-  Create Log Type
+  Create Log Input
   """
   input CreateLogInput {
     body: String!
     phoneNumber: String!
+  }
+
+  """
+  Update User Data Type
+  """
+  input UpdateUserInput {
+    id: ID!
+    fullname: String!
+    password: String!
+    role: String!
+    email: String!
   }
 
   """
@@ -69,6 +88,7 @@ const typeDefs = gql`
     getLogs: [Log]
     getLog(input: getLogInput!): Log
     getCurrentUserLogs: [Log]
+    getUsers: [User]
   }
 
   """
@@ -78,6 +98,7 @@ const typeDefs = gql`
     register(input: RegisterInput): User!
     login(input: LoginInput): User!
     createLog(input: CreateLogInput!): Log!
+    updateUser(input: UpdateUserInput!): UpdatedUser!
   }
 `;
 

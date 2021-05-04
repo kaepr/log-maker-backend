@@ -2,6 +2,7 @@ const Log = require("../../models/Log");
 const { checkAuth } = require("../../utils/authHelper");
 const { UserInputError } = require("apollo-server-express");
 const { formatYupError, logSchema } = require("../../validators");
+const User = require("../../models/User");
 
 module.exports = {
   Query: {
@@ -16,6 +17,11 @@ module.exports = {
     async getCurrentUserLogs(_, __, context, info) {
       try {
         const user = checkAuth(context);
+        const userExists = await User.findById(user.id);
+
+        if (!userExists) {
+          throw new Error("User creating post does not exist");
+        }
 
         const logs = await Log.find({ user: user.id }).sort({ createdAt: -1 });
 
@@ -27,7 +33,24 @@ module.exports = {
 
     async getLog(_, { input: { logId } }, context, info) {
       try {
+        const user = checkAuth(context);
+
+        const userExists = await User.findById(user.id);
+
+        if (!userExists) {
+          throw new Error("User creating post does not exist");
+        }
+
         const log = await Log.findById(logId);
+
+        if (!log) {
+          throw new Error("Given post id does not exist");
+        }
+
+        console.log("log = ", log);
+        if (String(log.user) !== user.id) {
+          throw new Error("Invalid User");
+        }
 
         if (!log) {
           throw new Error("Log not found");
@@ -51,6 +74,15 @@ module.exports = {
       }
 
       const user = checkAuth(context);
+
+      console.log("user = ", user);
+
+      const userExists = await User.findById(user.id);
+
+      if (!userExists) {
+        throw new Error("User creating post does not exist");
+      }
+
       const { body, phoneNumber } = input;
 
       const newLog = new Log({

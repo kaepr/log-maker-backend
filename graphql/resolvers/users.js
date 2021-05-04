@@ -6,11 +6,30 @@ const {
   formatYupError,
   loginSchema,
   registerSchema,
+  updateSchema,
 } = require("../../validators");
 
-const { generateToken } = require("../../utils/authHelper");
+const { generateToken, checkAdmin } = require("../../utils/authHelper");
 
 module.exports = {
+  Query: {
+    async getUsers(_, __, context, info) {
+      console.log("happens");
+      const user = checkAdmin(context);
+
+      const userExists = await User.findById(user.id);
+
+      if (!userExists) {
+        throw new Error("User does not exist");
+      }
+
+      try {
+        return await User.find().sort({ createdAt: -1 });
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+  },
   Mutation: {
     async login(_, { input }, context, info) {
       try {
@@ -120,6 +139,59 @@ module.exports = {
         id: res._id,
         token,
       };
+    },
+
+    async updateUser(_, { input }, context, info) {
+      try {
+        await updateSchema.validate(input, { abortEarly: false });
+      } catch (err) {
+        let errors = formatYupError(err);
+        throw new UserInputError("Errors", {
+          errors: errors,
+        });
+      }
+      console.log("input = ", input);
+      const { fullname, role, password, email, id } = input;
+
+      if (role !== "USER" && role !== "ADMIN") {
+        throw new UserInputError("Role is not defined", {
+          errors: [
+            {
+              role: "Role not defined",
+            },
+          ],
+        });
+      }
+
+      const oldUserInfo = await User.findById(id);
+
+      if (!oldUserInfo) {
+        throw new Error("User with given id does not exist");
+      }
+
+      console.log("oldUserInfo = ", oldUserInfo);
+
+      // assuming passwords did not change, hashPassword will remain the same
+      let hashPassword = oldUserInfo.password;
+
+      const match = await bcrypt.compare(password, oldUserInfo.password);
+
+      if (!match) {
+        // New password, generate a new hash
+        console.log("password changed");
+        hashPassword = await bcrypt.hash(password, 10);
+      }
+
+      await User.findByIdAndUpdate(id, {
+        fullname,
+        role,
+        password: hashPassword,
+        email,
+      });
+
+      const res = await User.findById(id);
+      console.log("res = ", res);
+      return res;
     },
   },
 };

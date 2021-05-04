@@ -1,6 +1,7 @@
 const loginSchema = require("./loginValidator");
 const registerSchema = require("./registerValidator");
 const logSchema = require("./logValidators");
+const updateSchema = require("./updateValidator");
 
 const formatYupError = (err) => {
   const errors = [];
@@ -18,4 +19,5 @@ module.exports = {
   loginSchema,
   registerSchema,
   logSchema,
+  updateSchema,
 };
