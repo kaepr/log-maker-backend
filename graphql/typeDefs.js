@@ -10,6 +10,7 @@ const typeDefs = gql`
     body: String!
     phoneNumber: String!
     user: String!
+    createdAt: String!
   }
 
   """
@@ -27,10 +28,11 @@ const typeDefs = gql`
   }
 
   """
-  Query
+  Get Log Input
+  Used to identify which log to get
   """
-  type Query {
-    getLogs: [Log]
+  input getLogInput {
+    logId: ID!
   }
 
   """
@@ -53,11 +55,29 @@ const typeDefs = gql`
   }
 
   """
+  Create Log Type
+  """
+  input CreateLogInput {
+    body: String!
+    phoneNumber: String!
+  }
+
+  """
+  Query
+  """
+  type Query {
+    getLogs: [Log]
+    getLog(input: getLogInput!): Log
+    getCurrentUserLogs: [Log]
+  }
+
+  """
   Mutations
   """
   type Mutation {
     register(input: RegisterInput): User!
     login(input: LoginInput): User!
+    createLog(input: CreateLogInput!): Log!
   }
 `;
 

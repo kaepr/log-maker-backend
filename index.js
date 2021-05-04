@@ -9,7 +9,13 @@ const PORT = process.env.PORT || 5000;
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({
+    req,
+  }),
+});
 
 const app = express();
 
@@ -19,5 +25,5 @@ connectDB();
 server.applyMiddleware({ app });
 
 app.listen({ port: PORT }, () =>
-  console.log(`Now browse to http://localhost:${PORT}` + server.graphqlPath)
+  console.log(`Running on http://localhost:${PORT}` + server.graphqlPath)
 );

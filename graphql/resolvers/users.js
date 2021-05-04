@@ -8,13 +8,11 @@ const {
   registerSchema,
 } = require("../../validators");
 
-const { generateToken } = require("../../utils/tokenHelper");
+const { generateToken } = require("../../utils/authHelper");
 
 module.exports = {
   Mutation: {
     async login(_, { input }, context, info) {
-      // console.log("input in login : ", input);
-
       try {
         await loginSchema.validate(input, { abortEarly: false });
       } catch (err) {
