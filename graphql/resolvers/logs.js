@@ -47,7 +47,6 @@ module.exports = {
           throw new Error("Given post id does not exist");
         }
 
-        console.log("log = ", log);
         if (String(log.user) !== user.id) {
           throw new Error("Invalid User");
         }
@@ -74,8 +73,6 @@ module.exports = {
       }
 
       const user = checkAuth(context);
-
-      console.log("user = ", user);
 
       const userExists = await User.findById(user.id);
 

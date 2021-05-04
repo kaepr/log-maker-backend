@@ -57,7 +57,7 @@ const checkAdmin = (context) => {
       try {
         const userData = jwt.verify(token, process.env.JWT_SECRET);
         // check if this user also exists in the database or not
-        console.log("user data inside check admin : ", userData);
+        // console.log("user data inside check admin : ", userData);
         if (userData.role !== "ADMIN") {
           console.log("should happend");
           throw new AuthenticationError("Access not granted");

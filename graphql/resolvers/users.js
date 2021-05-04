@@ -14,7 +14,6 @@ const { generateToken, checkAdmin } = require("../../utils/authHelper");
 module.exports = {
   Query: {
     async getUsers(_, __, context, info) {
-      console.log("happens");
       const user = checkAdmin(context);
 
       const userExists = await User.findById(user.id);
@@ -131,7 +130,7 @@ module.exports = {
 
       const res = await newUser.save();
 
-      console.log("res = ", res);
+      // console.log("res = ", res);
       const token = generateToken(res);
 
       return {
@@ -169,8 +168,6 @@ module.exports = {
         throw new Error("User with given id does not exist");
       }
 
-      console.log("oldUserInfo = ", oldUserInfo);
-
       // assuming passwords did not change, hashPassword will remain the same
       let hashPassword = oldUserInfo.password;
 
@@ -178,7 +175,7 @@ module.exports = {
 
       if (!match) {
         // New password, generate a new hash
-        console.log("password changed");
+        // console.log("password changed");
         hashPassword = await bcrypt.hash(password, 10);
       }
 
