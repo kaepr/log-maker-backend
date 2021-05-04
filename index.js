@@ -1,38 +1,13 @@
 const express = require("express");
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer } = require("apollo-server-express");
 const connectDB = require("./database/db");
 
 require("dotenv").config();
 
-const Log = require("./models/Log");
-const User = require("./models/User");
-
 const PORT = process.env.PORT || 5000;
 
-const typeDefs = gql`
-  type Log {
-    id: ID!
-    body: String!
-    phoneNumber: String!
-    user: String!
-  }
-
-  type Query {
-    getLogs: [Log]
-  }
-`;
-
-const resolvers = {
-  Query: {
-    async getLogs() {
-      try {
-        return await Log.find();
-      } catch (err) {
-        throw new Error(err);
-      }
-    },
-  },
-};
+const typeDefs = require("./graphql/typeDefs");
+const resolvers = require("./graphql/resolvers");
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
