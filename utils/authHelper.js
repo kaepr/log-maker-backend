@@ -23,7 +23,7 @@ const checkAuth = async (context) => {
     if (token) {
       try {
         const userData = jwt.verify(token, process.env.JWT_SECRET);
-
+        console.log("udata", userData);
         // check if this user still exists in database or not
         // console.log("userData  in checkAuth = ", userData);
 
@@ -31,7 +31,7 @@ const checkAuth = async (context) => {
         const userDoc = await User.findById(userData.id);
 
         if (!userDoc) {
-          throw new AuthenticationError("Invalid / Expired Token");
+          throw new Error("User does not exist or Token expired");
         }
 
         return userData;

@@ -9,7 +9,11 @@ const {
   updateSchema,
 } = require("../../validators");
 
-const { generateToken, checkAdmin } = require("../../utils/authHelper");
+const {
+  generateToken,
+  checkAdmin,
+  checkAuth,
+} = require("../../utils/authHelper");
 
 module.exports = {
   Query: {
@@ -28,6 +32,26 @@ module.exports = {
 
       try {
         return await User.find().sort({ createdAt: -1 });
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getCurrentUser(_, __, context, info) {
+      const user = await checkAuth(context);
+
+      // console.log("user = ", user);
+
+      // console.log("user data from token = ", user);
+      // const userExists = await User.findById(user.id);
+
+      // if (!userExists) {
+      //   throw new Error("User does not exist");
+      // }
+
+      console.log("user = ", user);
+
+      try {
+        return await User.findById(user.id);
       } catch (err) {
         throw new Error(err);
       }
@@ -80,6 +104,8 @@ module.exports = {
     },
 
     async register(_, { input }, context, info) {
+      const userData = await checkAdmin(context);
+
       try {
         await registerSchema.validate(input, { abortEarly: false });
       } catch (err) {

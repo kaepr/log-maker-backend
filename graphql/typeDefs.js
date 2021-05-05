@@ -24,14 +24,14 @@ const typeDefs = gql`
     email: String!
     role: String!
     createdAt: String!
-    token: String!
+    token: String
   }
 
-  type UpdatedUser{
+  type UpdatedUser {
     id: ID!
     fullname: String!
     role: String!
-    createdAt: String!
+    createdAt: String
     email: String!
   }
 
@@ -89,6 +89,7 @@ const typeDefs = gql`
     getLog(input: getLogInput!): Log
     getCurrentUserLogs: [Log]
     getUsers: [User]
+    getCurrentUser: UpdatedUser
   }
 
   """
