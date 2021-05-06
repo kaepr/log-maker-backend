@@ -198,6 +198,20 @@ module.exports = {
         throw new Error("User with given id does not exist");
       }
 
+      // Check if email is still unique
+      const checkEmail = await User.find({ email });
+      console.log("user with this mail = ", checkEmail);
+
+      if (checkEmail.length > 1) {
+        throw new Error("User with email already exists");
+      }
+
+      if (checkEmail.length == 1 && checkEmail[0].id !== id) {
+        // email alreadys exists, and the id does not match
+        // thus its a different account with same email
+        throw new Error("User with email already exists");
+      }
+
       // assuming passwords did not change, hashPassword will remain the same
       let hashPassword = oldUserInfo.password;
 
