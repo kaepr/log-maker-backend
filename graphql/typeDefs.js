@@ -82,13 +82,21 @@ const typeDefs = gql`
   }
 
   """
+  Get User Paginate
+  """
+  input UserPaginate {
+    offset: Int
+    limit: Int
+  }
+
+  """
   Query
   """
   type Query {
     getLogs: [Log]
     getLog(input: getLogInput!): Log
     getCurrentUserLogs: [Log]
-    getUsers: [User]
+    getUsers(input: UserPaginate): [User]
     getCurrentUser: UpdatedUser
   }
 

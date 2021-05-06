@@ -17,12 +17,18 @@ const {
 
 module.exports = {
   Query: {
-    async getUsers(_, __, context, info) {
-      // console.log("inside get users");
+    async getUsers(_, { input }, context, info) {
+      // console.log("input = ", input);
+      const { offset, limit } = input;
       const user = await checkAdmin(context);
 
       try {
-        return await User.find().sort({ createdAt: -1 });
+        let data = await User.find().sort({ createdAt: -1 });
+        if (limit === 0) {
+          return data.slice(offset);
+        }
+        data = data.slice(offset, offset + limit);
+        return data;
       } catch (err) {
         throw new Error(err);
       }
