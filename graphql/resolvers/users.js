@@ -21,15 +21,6 @@ module.exports = {
       // console.log("inside get users");
       const user = await checkAdmin(context);
 
-      // console.log("user = ", user);
-
-      // console.log("user data from token = ", user);
-      // const userExists = await User.findById(user.id);
-
-      // if (!userExists) {
-      //   throw new Error("User does not exist");
-      // }
-
       try {
         return await User.find().sort({ createdAt: -1 });
       } catch (err) {
@@ -38,17 +29,6 @@ module.exports = {
     },
     async getCurrentUser(_, __, context, info) {
       const user = await checkAuth(context);
-
-      // console.log("user = ", user);
-
-      // console.log("user data from token = ", user);
-      // const userExists = await User.findById(user.id);
-
-      // if (!userExists) {
-      //   throw new Error("User does not exist");
-      // }
-
-      console.log("user = ", user);
 
       try {
         return await User.findById(user.id);
@@ -200,7 +180,6 @@ module.exports = {
 
       // Check if email is still unique
       const checkEmail = await User.find({ email });
-      console.log("user with this mail = ", checkEmail);
 
       if (checkEmail.length > 1) {
         throw new Error("User with email already exists");
@@ -231,7 +210,6 @@ module.exports = {
       });
 
       const res = await User.findById(id);
-      // console.log("res = ", res);
       return res;
     },
   },

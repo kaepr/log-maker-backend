@@ -23,7 +23,7 @@ const checkAuth = async (context) => {
     if (token) {
       try {
         const userData = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("udata", userData);
+        // console.log("udata", userData);
         // check if this user still exists in database or not
         // console.log("userData  in checkAuth = ", userData);
 
